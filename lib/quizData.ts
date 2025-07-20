@@ -4,6 +4,12 @@ export async function fetchQuizData(): Promise<QuizResponse[]> {
   try {
     console.log('🔍 Fetching quiz data from Supabase...')
     
+    // Check if Supabase is properly initialized
+    if (!supabase || !supabase.from) {
+      console.warn('⚠️ Supabase client not properly initialized, returning empty data')
+      return []
+    }
+    
     let allData: any[] = []
     let page = 0
     const pageSize = 1000

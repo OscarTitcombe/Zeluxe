@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import {
   LineChart,
@@ -27,9 +27,13 @@ import {
   ScatterChart,
   ZAxis
 } from 'recharts'
-import { fetchQuizData, processQuizData, getRecentTrends, getResponsesByDate, formatDisplayName } from '../../lib/quizData'
+import { fetchQuizData, processQuizData, getResponsesByDate, formatDisplayName } from '../../lib/quizData'
 import { FragranceInsights } from '../../lib/supabase'
 import { ComposableMap, Geographies, Geography } from 'react-simple-maps'
+
+// Force dynamic rendering to prevent build errors
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 // Sidebar Component
 const Sidebar = ({ 
@@ -638,6 +642,62 @@ export default function Dashboard() {
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-zeluxe-400 mx-auto mb-4"></div>
           <p className="text-slate">Loading quiz insights...</p>
         </div>
+      </div>
+    )
+  }
+
+  // Handle case where no data is available
+  if (!insights || insights.total_responses === 0) {
+    return (
+      <div className="min-h-screen bg-dark-950 text-white tech-bg">
+        <Sidebar 
+          timeFilter={timeFilter}
+          setTimeFilter={setTimeFilter}
+          genderFilter={genderFilter}
+          setGenderFilter={setGenderFilter}
+          ageFilter={ageFilter}
+          setAgeFilter={setAgeFilter}
+          scentFilter={scentFilter}
+          setScentFilter={setScentFilter}
+        />
+        
+        <main className="ml-64 p-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="glass-card p-12 text-center"
+          >
+            <div className="text-6xl mb-4">📊</div>
+            <h1 className="text-2xl font-bold text-white mb-4">No Quiz Data Available</h1>
+            <p className="text-slate mb-6">
+              The dashboard is ready but no quiz responses have been collected yet.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+              <div className="bg-dark-800/50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">Market Trends</h3>
+                <p className="text-sm text-slate">Explore industry insights and trend analysis</p>
+                <a href="/dashboard/market-trends" className="text-zeluxe-400 hover:text-zeluxe-300 text-sm mt-2 inline-block">
+                  View Trends →
+                </a>
+              </div>
+              <div className="bg-dark-800/50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">Competitor Analysis</h3>
+                <p className="text-sm text-slate">Analyze competitive landscape and positioning</p>
+                <a href="/dashboard/competitor-analysis" className="text-zeluxe-400 hover:text-zeluxe-300 text-sm mt-2 inline-block">
+                  View Analysis →
+                </a>
+              </div>
+              <div className="bg-dark-800/50 p-4 rounded-lg">
+                <h3 className="text-lg font-semibold text-white mb-2">Consumer Insights</h3>
+                <p className="text-sm text-slate">Deep dive into consumer behavior patterns</p>
+                <a href="/dashboard/consumer-insights" className="text-zeluxe-400 hover:text-zeluxe-300 text-sm mt-2 inline-block">
+                  View Insights →
+                </a>
+              </div>
+            </div>
+          </motion.div>
+        </main>
       </div>
     )
   }

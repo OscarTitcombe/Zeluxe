@@ -1,6 +1,10 @@
 'use client'
 
 import React, { useState } from 'react'
+
+// Force dynamic rendering to prevent build errors
+export const dynamic = 'force-dynamic'
+export const revalidate = 0
 import { motion } from 'framer-motion'
 import {
   LineChart,
